@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'malicious'
+require 'virustotal_api'
+require 'awesome_print'
+require 'dotenv'
+
+Dotenv.load
+
+api_key = ENV['VIRUS_TOTAL_API_KEY']
+client = Malicious::Client.new(api_key: api_key)
+
+url = 'https://google.com'
+result = client.url_scan(url)
+
+if result
+  ap result.ready?
+  ap result.malicious?
+  ap result.scan_time
+  ap result.scans
+else
+  puts "nothing found"
+end
