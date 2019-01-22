@@ -13,13 +13,24 @@ api_key = ENV['VIRUS_TOTAL_API_KEY']
 client = Malicious::Client.new(api_key: api_key)
 
 url = 'https://google.com'
-result = client.url_scan(url)
+url = 'https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malicious-url'
 
+url = 'http://027.com' # it hosts bad content but domain is negative
+url = 'http://027.com/music-news/kelly-clarkson-begs-adele-to-release-new-music/&amp;ss' # that is malicious
+domain = '027.com'
+
+result = client.domain_scan(domain)
+ap result.positives
+ap result.vulnerable?
+
+result = client.url_scan(url)
 if result
+  ap result
   ap result.ready?
   ap result.malicious?
-  ap result.scan_time
+  ap result.positives
+  ap result.scan_date
   ap result.scans
 else
-  puts "nothing found"
+  puts 'nothing found'
 end

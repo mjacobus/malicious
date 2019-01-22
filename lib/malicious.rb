@@ -3,49 +3,96 @@
 require 'malicious/version'
 
 module Malicious
-  class Report
-    def initialize(result)
-      @result = result
+  # https://developers.virustotal.com/v2.0/reference#domain-report
+  class DomainReport
+    def initialize(data)
+      @data = data
     end
 
-    def scan_time
-      Time.parse(@result['scan_date'])
-    end
-
-    def verbose_message
-      @result['verbose_msg']
-    end
-
-    def filescan_id
-      @result['filescan_id']
-    end
-
-    def resource
-      @result['resource']
-    end
-
-    def response_code
-      @result['response_code']
-    end
-
-    def exists?
-      @result.exists?
+    def detected_urls
+      Array(@data['detected_urls']).map do |data|
+        DetectedUrl.new(data)
+      end
     end
 
     def positives
-      @result['positives']
+      detected_urls.sum(&:positives)
+    end
+
+    def vulnerable?
+      detected_urls.size.positive?
+    end
+  end
+
+  class DetectedUrl
+    def initialize(data)
+      @data = data
+    end
+
+    def to_s
+      @data['url']
     end
 
     def url
-      @result['url']
+      @data['url']
     end
 
-    def permalink
-      @result['permalink']
+    def positives
+      @data['positives'].to_i
     end
 
     def total
-      @result['total']
+      @data['total'].to_i
+    end
+
+    def scan_date
+      Time.parse(@data['scan_date'])
+    end
+  end
+
+  class UrlReport
+    def initialize(data)
+      @data = data
+    end
+
+    def scan_date
+      Time.parse(@data['scan_date'])
+    end
+
+    def verbose_message
+      @data['verbose_msg']
+    end
+
+    def filescan_id
+      @data['filescan_id']
+    end
+
+    def resource
+      @data['resource']
+    end
+
+    def response_code
+      @data['response_code']
+    end
+
+    def exists?
+      @data.exists?
+    end
+
+    def positives
+      @data['positives']
+    end
+
+    def url
+      @data['url']
+    end
+
+    def permalink
+      @data['permalink']
+    end
+
+    def total
+      @data['total']
     end
 
     def malicious?
@@ -57,11 +104,11 @@ module Malicious
     end
 
     def scan_id
-      @result['scan_id']
+      @data['scan_id']
     end
 
     def scans
-      Array(@result['scans']).map do |scan|
+      Array(@data['scans']).map do |scan|
         Scan.new(scan.first, scan.last)
       end
     end
@@ -90,7 +137,17 @@ module Malicious
         return
       end
 
-      Report.new(report.report)
+      UrlReport.new(report.report)
+    end
+
+    def domain_scan(url)
+      report = VirustotalAPI::DomainReport.find(url, @api_key)
+
+      unless report.exists?
+        return
+      end
+
+      DomainReport.new(report.report)
     end
   end
 end
