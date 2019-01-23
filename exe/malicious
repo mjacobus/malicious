@@ -12,18 +12,27 @@ Dotenv.load
 api_key = ENV['VIRUS_TOTAL_API_KEY']
 client = Malicious::Client.new(api_key: api_key)
 
-url = 'https://google.com'
-url = 'https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malicious-url'
+malicious_urls = [
+  'https://thetowelfactory.com/new/login/index.php',
+  'https://grosfeld.global/me/login/index.php',
+  'https://gilsondaub.cf/index/newpage/index.php',
+  'https://vatsparivar.com/Admin/login/index.php',
+  'https://agilemsc.com/Acci/wp-includes/index.php',
+  'https://liascatering.com/fax/login/index.php',
+]
 
-url = 'http://027.com' # it hosts bad content but domain is negative
-url = 'http://027.com/music-news/kelly-clarkson-begs-adele-to-release-new-music/&amp;ss' # that is malicious
-domain = '027.com'
+domain = malicious_urls.sample.split('/')[2]
+url = malicious_urls.sample
 
 result = client.domain_scan(domain)
+p result.detected_urls.map(&:url)
+p result.detected_urls.map(&:positives)
+p result.positives
 ap result.positives
 ap result.vulnerable?
 
 result = client.url_scan(url)
+
 if result
   ap result
   ap result.ready?
