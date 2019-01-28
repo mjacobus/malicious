@@ -12,14 +12,22 @@ GEM
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.6.0)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    jaro_winkler (1.5.1)
     jaro_winkler (1.5.1-x86_64-darwin-17)
     json (2.1.0)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
+    multipart-post (2.0.0)
     netrc (0.11.0)
+    oj (3.6.13)
+    otx_ruby (0.9.9)
+      faraday (~> 0.11)
+      oj (~> 3.6.5)
     parallel (1.12.1)
     parser (2.5.3.0)
       ast (~> 2.4.0)
@@ -68,6 +76,7 @@ DEPENDENCIES
   bundler (~> 1.16)
   dotenv
   malicious!
+  otx_ruby
   rake (~> 10.0)
   rspec (~> 3.0)
   rubocop
