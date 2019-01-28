@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Malicious
   module VirusTotal
     # https://developers.virustotal.com/v2.0/reference#domain-report
@@ -13,7 +15,7 @@ module Malicious
       end
 
       def positives
-        detected_urls.sum(&:positives)
+        detected_urls.sum(&:positives).to_i
       end
 
       def vulnerable?
