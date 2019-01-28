@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'malicious'
+require 'virustotal_api'
+require 'awesome_print'
+require 'otx_ruby'
+require 'dotenv'
+
+ENV['OTX_DEBUG'] = 'true'
+api_key = ENV['OTX_KEY']
+samples = Malicious::Samples.new
+
+domain_client = OTX::Domain.new(api_key)
+url_client = OTX::URL.new(api_key)
+
+sections = %w[malware]
+
+
+puts '-' * 80
+puts "API DOC: https://otx.alienvault.com/api"
+puts '-' * 80
+
+#-------------------------------------------------------------------------------
+# Domain
+#-------------------------------------------------------------------------------
+samples.domains.each do |domain|
+  sections.each do |section|
+    puts '-' * 80
+    puts "Sample domain: #{domain}, section: #{section}"
+    puts '-' * 80
+    domain_client.send("get_#{section}", domain)
+  end
+end
+
+#-------------------------------------------------------------------------------
+# Domain
+#-------------------------------------------------------------------------------
+sections = %w[general url_list]
+samples.urls.each do |url|
+  sections.each do |section|
+    puts '-' * 80
+    puts "Sample url: #{url}, section: #{section}"
+    puts '-' * 80
+    url_client.send("get_#{section}", url)
+  end
+end
