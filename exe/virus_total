@@ -10,7 +10,7 @@ require 'dotenv'
 Dotenv.load
 
 api_key = ENV['VIRUS_TOTAL_API_KEY']
-client = Malicious::Client.new(api_key: api_key)
+client = Malicious::VirusTotal::Client.new(api_key: api_key)
 
 malicious_urls = [
   'https://thetowelfactory.com/new/login/index.php',
